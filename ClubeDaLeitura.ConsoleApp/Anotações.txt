@@ -1,0 +1,4 @@
+﻿Mostrar iD:
+i+1
+Receber iD:
+i-1.
