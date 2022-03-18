@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace ClubeDaLeitura.ConsoleApp
 {
-    public class Amigo
+    public class Categoria
     {
         public string nome;
-        public string nomeDoResponsavel;
-        public string telefone;
-        public string endereco;
-        public bool temEmprestimo;
+        public int diasDeEmprestimo;
+        public Revista[] revistas;
     }
 }

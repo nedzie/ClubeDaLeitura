@@ -35,7 +35,7 @@ namespace ClubeDaLeitura.ConsoleApp
         {
             Console.Clear();
             PosicaoVazia posicoes = new();
-            int posicaoVazia = posicoes.ObterPosicaoVaziaAmigo(amigo);
+            int posicaoVazia = posicoes.ObterPosicaoVazia(amigo);
             Amigo amigoTemporario = new();
             Console.WriteLine("Menu geral > Menu amigo > Registrar amigo\n");
             Console.WriteLine("ID: " + (posicaoVazia + 1));
@@ -53,18 +53,26 @@ namespace ClubeDaLeitura.ConsoleApp
 
         public void VisualizarAmigo()
         {
-            for (int i = 0; i < amigo.Length; i++)
+            Valores valores = new Valores();
+            bool temAlgo = valores.VerificarValores(amigo);
+            if (temAlgo == true)
             {
-                if (amigo[i] != null)
+                Console.WriteLine("\nAmigos:\n");
+                for (int i = 0; i < amigo.Length; i++)
                 {
-                    Console.WriteLine(
-                        "iD.........: " + (i + 1) + "\n" +
-                        "Nome.......: " + amigo[i].nome + "\n" +
-                        "Responsável: " + amigo[i].nomeDoResponsavel + "\n" +
-                        "Telefone...: " + amigo[i].telefone + "\n" +
-                        "Endereço...: " + amigo[i].endereco + "\n");
+                    if (amigo[i] != null)
+                    {
+                        Console.WriteLine(
+                            "iD.........: " + (i + 1) + "\n" +
+                            "Nome.......: " + amigo[i].nome + "\n" +
+                            "Responsável: " + amigo[i].nomeDoResponsavel + "\n" +
+                            "Telefone...: " + amigo[i].telefone + "\n" +
+                            "Endereço...: " + amigo[i].endereco + "\n");
+                    }
                 }
             }
+            else
+                Console.WriteLine("\nAinda não temos amigos cadastrados...\n");
         }
     }
 }

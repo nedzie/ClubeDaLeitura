@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClubeDaLeitura.ConsoleApp
 {
@@ -10,6 +6,7 @@ namespace ClubeDaLeitura.ConsoleApp
     {
         public Revista[] revista = new Revista[200];
         public MenuCaixa mc; // Acessar tudo de "MenuCaixa"
+        public menuCategoria mctg;
         public void MostrarMenu()
         {
             Console.Clear();
@@ -41,38 +38,55 @@ namespace ClubeDaLeitura.ConsoleApp
         {
             Console.Clear();
             PosicaoVazia posicoes = new();
-            int posicaoVazia = posicoes.ObterPosicaoVaziaRevista(revista);
-            Revista revistaTemporaria = new();
+            int posicaoVazia = posicoes.ObterPosicaoVazia(revista);
             Console.WriteLine("Menu geral > Menu revista > Registrar revista\n");
             Console.WriteLine("ID: " + (posicaoVazia + 1));
-            Console.Write("Informe o tipo da coleção: ");
+            revista[posicaoVazia] = AtribuirValores();
+            Console.Clear();
+        }
+
+        public Revista AtribuirValores()
+        {
+            Revista revistaTemporaria = new();
+            Console.Write("Informe o tipo da coleção..: ");
             revistaTemporaria.tipo = Console.ReadLine();
-            Console.Write("Informe o número da edição: ");
+            Console.Write("Informe o número da edição.: ");
             revistaTemporaria.numeroDaEdicao = int.Parse(Console.ReadLine());
-            Console.Write("Informe a data de empréstimo: ");
-            revistaTemporaria.dataDoEmprestimo = Console.ReadLine();
+            Console.Write("Informe o ano de lançamento: ");
+            revistaTemporaria.ano = int.Parse(Console.ReadLine());
+            mctg.VisualizarCategorias();
+            Console.Write("Se encaixa na categoria: ");
+            int posicaoDaCategoria = int.Parse(Console.ReadLine()) - 1;
+            revistaTemporaria.categoriaDaRevista = mctg.categoria[posicaoDaCategoria];
             mc.VisualizarCaixas();
             Console.Write("Guardar na caixa nº: ");
             int posicaoDaCaixa = int.Parse(Console.ReadLine()) - 1;
             revistaTemporaria.caixaOndeEstaGuardada = mc.caixa[posicaoDaCaixa];
-            revista[posicaoVazia] = revistaTemporaria;
-            Console.Clear();
+            return revistaTemporaria;
         }
-
         public void VisualizarRevistas()
         {
-            for (int i = 0; i < revista.Length; i++)
+            Valores valores = new();
+            bool temAlgo = valores.VerificarValores(revista);
+            if (temAlgo)
             {
-                if (revista[i] != null)
+                Console.WriteLine("\nRevistas:\n");
+                for (int i = 0; i < revista.Length; i++)
                 {
-                    Console.WriteLine(
-                        "Coleção........: " + (i + 1) + "\n" +
-                        "Nº edição......: " + revista[i].numeroDaEdicao + "\n" +
-                        "Data empréstimo: " + revista[i].dataDoEmprestimo + "\n" +
-                        "Guardada.......: " + revista[i].caixaOndeEstaGuardada.cor + "\n");
+                    if (revista[i] != null)
+                    {
+                        Console.WriteLine(
+                            "iD.............: " + (i + 1) + "\n" +
+                            "Coleção........: " + revista[i].tipo + "\n" +
+                            "Nº edição......: " + revista[i].numeroDaEdicao + "\n" +
+                            "Ano............: " + revista[i].ano + "\n" +
+                            "Categoria......: " + revista[i].categoriaDaRevista.nome + "\n" +
+                            "Na caixa.......: " + revista[i].caixaOndeEstaGuardada.cor + "\n");
+                    }
                 }
             }
-            Console.ReadLine();
+            else        
+                Console.WriteLine("\nAinda não temos revistas cadastradas...\n");
         }
     }
 }

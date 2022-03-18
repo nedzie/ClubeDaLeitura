@@ -10,8 +10,9 @@ namespace ClubeDaLeitura.ConsoleApp
     {
         public string tipo;
         public int numeroDaEdicao;
-        public string dataDoEmprestimo;
-        public string dataDaDevolucao;
+        public int ano;
         public Caixa caixaOndeEstaGuardada;
+        public Categoria categoriaDaRevista;
+        public bool estaDisponivel;
     }
 }

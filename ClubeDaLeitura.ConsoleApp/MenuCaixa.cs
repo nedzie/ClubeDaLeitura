@@ -35,32 +35,45 @@ namespace ClubeDaLeitura.ConsoleApp
         {
             Console.Clear();
             PosicaoVazia posicoes = new();
-            int posicaoVazia = posicoes.ObterPosicaoVaziaCaixa(caixa);
-            Caixa caixaTemporaria = new();
+            int posicaoVazia = posicoes.ObterPosicaoVazia(caixa);
             Console.WriteLine("Menu geral > Menu caixa > Registrar caixa\n");
             Console.WriteLine("ID: " + (posicaoVazia + 1));
+            caixa[posicaoVazia] = AtribuirValores();
+            Console.Clear();
+        }
+
+        public Caixa AtribuirValores()
+        {
+            Caixa caixaTemporaria = new();
             Console.Write("Informe a cor da caixa: ");
             caixaTemporaria.cor = Console.ReadLine();
             Console.Write("Informe a etiqueta da caixa: ");
             caixaTemporaria.etiqueta = (Console.ReadLine());
             Console.Write("Informe o número da caixa: ");
             caixaTemporaria.numero = int.Parse(Console.ReadLine());
-            caixa[posicaoVazia] = caixaTemporaria;
-            Console.Clear();
+            return caixaTemporaria;
         }
         public void VisualizarCaixas()
         {
-            for (int i = 0; i < caixa.Length; i++)
+            Valores valores = new();
+            bool temAlgo = valores.VerificarValores(caixa);
+            if (temAlgo)
             {
-                if (caixa[i] != null)
+                Console.WriteLine("\nCaixas:\n");
+                for (int i = 0; i < caixa.Length; i++)
                 {
-                    Console.WriteLine(
-                        "iD.........: " + (i+1) + "\n" + 
-                        "Cor........: " + caixa[i].cor + "\n" +
-                        "Etiqueta...: " + caixa[i].etiqueta + "\n" + 
-                        "Número.....: " + caixa[i].numero + "\n");
+                    if (caixa[i] != null)
+                    {
+                        Console.WriteLine(
+                            "iD.........: " + (i + 1) + "\n" +
+                            "Cor........: " + caixa[i].cor + "\n" +
+                            "Etiqueta...: " + caixa[i].etiqueta + "\n" +
+                            "Número.....: " + caixa[i].numero + "\n");
+                    }
                 }
+            }
+            else
+                Console.WriteLine("\nAinda não temos caixas cadastradas...\n");
             }
         }
     }
-}
