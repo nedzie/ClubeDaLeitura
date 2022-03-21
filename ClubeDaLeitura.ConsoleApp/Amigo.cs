@@ -14,5 +14,7 @@ namespace ClubeDaLeitura.ConsoleApp
         public string endereco;
         public bool temEmprestimo;
         public bool temReserva;
+        public bool temMulta;
+        public decimal ValorDaMulta;
     }
 }

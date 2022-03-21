@@ -5,6 +5,7 @@ namespace ClubeDaLeitura.ConsoleApp
     public class MenuAmigo
     {
         public Amigo[] amigo = new Amigo[200];
+        public MenuEmprestimo menuEmprestimo = new();
         public void MostrarMenu()
         {
             Console.Clear();
@@ -12,7 +13,7 @@ namespace ClubeDaLeitura.ConsoleApp
             do
             {
                 Console.WriteLine("Menu geral > Menu amigo\n");
-                Console.WriteLine("1. Registrar amigo\n2. Visualizar amigos\n3. Sair");
+                Console.WriteLine("1. Registrar amigo\n2. Visualizar amigos\n3. Visualizar amigos com multas (Se houver)\n4. Sair");
                 Console.Write("\nOpção: ");
                 escolhaDoMenu = int.Parse(Console.ReadLine());
                 switch (escolhaDoMenu)
@@ -24,12 +25,15 @@ namespace ClubeDaLeitura.ConsoleApp
                         VisualizarAmigo();
                         break;
                     case 3:
+                        VisualizarMultas();
+                        break;
+                    case 4:
                         break;
                     default:
                         Console.WriteLine("Opção inválida!");
                         break;
                 }
-            } while (escolhaDoMenu != 3);
+            } while (escolhaDoMenu != 4);
         }
         public void RegistrarAmigo()
         {
@@ -68,6 +72,31 @@ namespace ClubeDaLeitura.ConsoleApp
                             "Responsável: " + amigo[i].nomeDoResponsavel + "\n" +
                             "Telefone...: " + amigo[i].telefone + "\n" +
                             "Endereço...: " + amigo[i].endereco + "\n");
+                    }
+                }
+            }
+            else
+                Console.WriteLine("\nAinda não temos amigos cadastrados...\n");
+        }
+
+        public void VisualizarMultas()
+        {
+            Valores valores = new Valores();
+            bool temAlgo = valores.VerificarValores(amigo);
+            if (temAlgo == true)
+            {
+                Console.WriteLine("\nAmigos:\n");
+                for (int i = 0; i < amigo.Length; i++)
+                {
+                    if (amigo[i] != null && amigo[i].temMulta == true)
+                    {
+                        Console.WriteLine(
+                            "iD.........: " + (i + 1) + "\n" +
+                            "Nome.......: " + amigo[i].nome + "\n" +
+                            "Responsável: " + amigo[i].nomeDoResponsavel + "\n" +
+                            "Telefone...: " + amigo[i].telefone + "\n" +
+                            "Endereço...: " + amigo[i].endereco + "\n" +
+                            "Multa desde: " + menuEmprestimo.emprestimo[i].dataDaDevolucao.ToString("dd/MM/yyyy"));
                     }
                 }
             }

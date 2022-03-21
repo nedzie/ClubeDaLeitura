@@ -2,9 +2,9 @@
 
 namespace ClubeDaLeitura.ConsoleApp
 {
-    internal class MenuEmprestimo
+    public class MenuEmprestimo
     {
-        Emprestimo[] emprestimo = new Emprestimo[200];
+        public Emprestimo[] emprestimo = new Emprestimo[200];
         public MenuAmigo menuAmigo;
         public MenuRevista menuRevista;
         public MenuReserva menuReserva;
@@ -40,7 +40,6 @@ namespace ClubeDaLeitura.ConsoleApp
                 }
             } while (escolhaDoMenu != 5);
         }
-
         public void RegistrarEmprestimo()
         {
             Console.Clear();
@@ -51,8 +50,6 @@ namespace ClubeDaLeitura.ConsoleApp
             emprestimo[posicaoVazia] = AtribuirValores();
             Console.Clear();
         }
-
-
         public Emprestimo AtribuirValores()
         {
             menuAmigo.VisualizarAmigo();
@@ -63,9 +60,33 @@ namespace ClubeDaLeitura.ConsoleApp
             emprestimoTemporario.dataDoEmprestimo = SelecionarData();
             emprestimoTemporario.revistaEmprestada.temEmprestimo = true;
             emprestimoTemporario.amigoQueQuerEmprestar.temEmprestimo = true;
+            DateTime hoje = DateTime.Today;
+            emprestimoTemporario.dataDaDevolucao = DefinirDataDevolucao(emprestimoTemporario);
+            if (hoje > emprestimoTemporario.dataDaDevolucao)
+                emprestimoTemporario.amigoQueQuerEmprestar.temMulta = true;
             return emprestimoTemporario;
         }
 
+        private DateTime DefinirDataDevolucao(Emprestimo emprestimoTemporario)
+        {
+            int posicao = 0;
+            string nome = emprestimoTemporario.amigoQueQuerEmprestar.nome; // <<< Procurar esse
+            for (int i = 0; i < emprestimo.Length; i++)
+            {
+                if (emprestimo[i] == null)
+                    continue;
+                if (emprestimo[i].amigoQueQuerEmprestar.nome == nome)
+                {
+                    posicao = i;
+                    break;
+                }
+                else
+                    continue;
+            }
+            DateTime dataDaDevolucao = (emprestimoTemporario.dataDoEmprestimo.AddDays(menuRevista.revista
+                [posicao].categoriaDaRevista.diasDeEmprestimo));
+            return dataDaDevolucao;
+        }
         public DateTime SelecionarData()
         {
             Console.Write("E quando foi feito o empréstimo? ");
@@ -79,16 +100,16 @@ namespace ClubeDaLeitura.ConsoleApp
             int posicaoDoAmigo = int.Parse(Console.ReadLine()) - 1;
             do
             {
-                if (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == true)
+                if (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == true || menuAmigo.amigo[posicaoDoAmigo].temMulta == true)
                 {
-                    Console.WriteLine("Desculpe " + menuAmigo.amigo[posicaoDoAmigo].nome + " já tem um empréstimo. Selecione outro: ");
+                    Console.WriteLine("Desculpe " + menuAmigo.amigo[posicaoDoAmigo].nome + " já tem um empréstimo ou está com multa em aberto. Selecione outro: ");
                     menuAmigo.VisualizarAmigo();
                     Console.Write("\nQual desses amigos acima que emprestou? ");
                     posicaoDoAmigo = int.Parse(Console.ReadLine()) - 1;
                 }
                 else
                     break;
-            } while (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == false);
+            } while (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == false && menuAmigo.amigo[posicaoDoAmigo].temMulta == false);
             Amigo amigoTemporario = menuAmigo.amigo[posicaoDoAmigo];
             return amigoTemporario;
         }
@@ -137,11 +158,18 @@ namespace ClubeDaLeitura.ConsoleApp
         public bool ChecarReserva(Emprestimo emprestimoTemporario)
         {
             bool status = false;
+            DateTime hoje = DateTime.Today;
             for (int i = 0; i < emprestimo.Length; i++)
             {
                 if (menuReserva.reserva[i] == null)
                     continue;
-                if (menuReserva.reserva[i].amigoQueReservou.nome == emprestimoTemporario.amigoQueQuerEmprestar.nome)
+
+                if (menuReserva.reserva[i].amigoQueReservou.nome == emprestimoTemporario.amigoQueQuerEmprestar.nome && (menuReserva.reserva[i].validade - hoje).TotalDays <= 2)
+                {
+                    status = true;
+                    break;
+                }
+                if ((hoje - menuReserva.reserva[i].validade).TotalDays > 2)
                 {
                     status = true;
                     break;
@@ -164,18 +192,19 @@ namespace ClubeDaLeitura.ConsoleApp
                 {
                     if (emprestimo[i] != null)
                     {
+                        emprestimo[i].dataDaDevolucao = (emprestimo[i].dataDoEmprestimo.AddDays(menuRevista.revista[i].categoriaDaRevista.diasDeEmprestimo));
                         Console.WriteLine(
                             "iD................: " + (i + 1) + "\n" +
                             "Amigo.............: " + emprestimo[i].amigoQueQuerEmprestar.nome + "\n" +
                             "Revista...........: " + emprestimo[i].revistaEmprestada.tipo + "\n" +
-                            "Data empréstimo...: " + emprestimo[i].dataDoEmprestimo.ToString("dd/MM/yyyy") + "\n");
+                            "Data empréstimo...: " + emprestimo[i].dataDoEmprestimo.ToString("dd/MM/yyyy") + "\n" +
+                            "Devolução (prévia): " + emprestimo[i].dataDaDevolucao.ToString("dd/MM/yyyy"));
                     }
                 }
             }
             else
                 Console.WriteLine("\nAinda não temos empréstimos cadastrados...\n");
         }
-
         public void VisualizarMensal()
         {
             DateTime hoje = DateTime.Now;
@@ -195,7 +224,6 @@ namespace ClubeDaLeitura.ConsoleApp
                 Console.ReadKey();
             }
         }
-
         public void VisualizarDiario()
         {
             DateTime hoje = DateTime.Today;

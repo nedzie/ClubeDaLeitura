@@ -11,6 +11,6 @@ namespace ClubeDaLeitura.ConsoleApp
         public Amigo amigoQueQuerEmprestar;
         public Revista revistaEmprestada;
         public DateTime dataDoEmprestimo;
-        //public string dataDaDevolucao;
+        public DateTime dataDaDevolucao;
     }
 }

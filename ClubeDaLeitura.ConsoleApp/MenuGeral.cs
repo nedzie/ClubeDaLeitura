@@ -30,6 +30,7 @@ namespace ClubeDaLeitura.ConsoleApp
                 switch (escolhaDoMenu)
                 {
                     case 1:
+                        menuAmigo.menuEmprestimo = menuEmprestimo;
                         menuAmigo.MostrarMenu();
                         break;
                     case 2:

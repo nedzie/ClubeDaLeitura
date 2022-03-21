@@ -8,7 +8,6 @@ namespace ClubeDaLeitura.ConsoleApp
         public MenuAmigo menuAmigo;
         public MenuRevista menuRevista;
         MenuEmprestimo menuEmprestimo = new();
-
         public void MostrarMenu()
         {
             Console.Clear();
@@ -50,7 +49,6 @@ namespace ClubeDaLeitura.ConsoleApp
             reserva[posicaoVazia] = AtribuirValores();
             Console.Clear();
         }
-
         public Reserva AtribuirValores()
         {
             Reserva reservaTemporaria = new Reserva();
@@ -82,7 +80,6 @@ namespace ClubeDaLeitura.ConsoleApp
             }
             return reservaTemporaria;
         }
-
         public void VisualizarReservas()
         {
             Valores valores = new();
@@ -107,7 +104,6 @@ namespace ClubeDaLeitura.ConsoleApp
             else
                 Console.WriteLine("\nAinda não temos revistas cadastradas...\n");
         }
-
         public DateTime ObterValidade(int i)
         {
             DateTime validade = new();
