@@ -2,7 +2,7 @@
 
 namespace ClubeDaLeitura.ConsoleApp
 {
-    internal class MenuRevista
+    public class MenuRevista
     {
         public Revista[] revista = new Revista[200];
         public MenuCaixa mc; // Acessar tudo de "MenuCaixa"

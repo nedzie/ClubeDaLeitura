@@ -86,5 +86,21 @@ namespace ClubeDaLeitura.ConsoleApp
             }
             return temAlgo;
         }
+
+        public bool VerificarValores(Reserva[] reserva)
+        {
+            bool temAlgo = false;
+            for (int i = 0; i < reserva.Length; i++)
+            {
+                if (reserva[i] != null)
+                {
+                    temAlgo = true;
+                    break;
+                }
+                else
+                    temAlgo = false;
+            }
+            return temAlgo;
+        }
     }
 }

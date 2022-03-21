@@ -5,15 +5,16 @@ namespace ClubeDaLeitura.ConsoleApp
     internal class MenuEmprestimo
     {
         Emprestimo[] emprestimo = new Emprestimo[200];
-        public MenuAmigo mA;
-        public MenuRevista mR;
+        public MenuAmigo menuAmigo;
+        public MenuRevista menuRevista;
+        public MenuReserva menuReserva;
         public void MostrarMenu()
         {
             Console.Clear();
             int escolhaDoMenu;
             do
             {
-                Console.WriteLine("Menu geral > Menu amigo\n");
+                Console.WriteLine("Menu geral > Menu empréstimo\n");
                 Console.WriteLine("1. Registrar empréstimo\n2. Visualizar empréstimos (total)\n3. Visualizar empréstimos (Mensal)\n4. Visualizar empréstimos (Diário)\n5. Sair");
                 Console.Write("\nOpção: ");
                 escolhaDoMenu = int.Parse(Console.ReadLine());
@@ -47,7 +48,6 @@ namespace ClubeDaLeitura.ConsoleApp
             int posicaoVazia = posicoes.ObterPosicaoVazia(emprestimo);
             Console.WriteLine("Menu geral > Menu empréstimo > Registrar empréstimo\n");
             Console.WriteLine("ID: " + (posicaoVazia + 1));
-            mA.VisualizarAmigo();
             emprestimo[posicaoVazia] = AtribuirValores();
             Console.Clear();
         }
@@ -55,37 +55,105 @@ namespace ClubeDaLeitura.ConsoleApp
 
         public Emprestimo AtribuirValores()
         {
+            menuAmigo.VisualizarAmigo();
             Emprestimo emprestimoTemporario = new();
+            emprestimoTemporario.amigoQueQuerEmprestar = SelecionarAmigo();
+            menuRevista.VisualizarRevistas();
+            emprestimoTemporario.revistaEmprestada = SelecionarRevista(emprestimoTemporario);
+            emprestimoTemporario.dataDoEmprestimo = SelecionarData();
+            emprestimoTemporario.revistaEmprestada.temEmprestimo = true;
+            emprestimoTemporario.amigoQueQuerEmprestar.temEmprestimo = true;
+            return emprestimoTemporario;
+        }
+
+        public DateTime SelecionarData()
+        {
+            Console.Write("E quando foi feito o empréstimo? ");
+            DateTime dataTemporaria = DateTime.Parse(Console.ReadLine());
+            return dataTemporaria;
+        }
+
+        public Amigo SelecionarAmigo()
+        {
             Console.Write("\nQual desses amigos acima que emprestou? ");
             int posicaoDoAmigo = int.Parse(Console.ReadLine()) - 1;
             do
             {
-                if (mA.amigo[posicaoDoAmigo].temEmprestimo == true)
+                if (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == true)
                 {
-                    Console.WriteLine("Desculpe " + mA.amigo[posicaoDoAmigo].nome + " já tem um empréstimo. Selecione outro: ");
-                    mA.VisualizarAmigo();
+                    Console.WriteLine("Desculpe " + menuAmigo.amigo[posicaoDoAmigo].nome + " já tem um empréstimo. Selecione outro: ");
+                    menuAmigo.VisualizarAmigo();
                     Console.Write("\nQual desses amigos acima que emprestou? ");
                     posicaoDoAmigo = int.Parse(Console.ReadLine()) - 1;
                 }
                 else
                     break;
-            } while (mA.amigo[posicaoDoAmigo].temEmprestimo == false);
-            if (mA.amigo[posicaoDoAmigo].temEmprestimo == false)
-            {
-                emprestimoTemporario.amigoQuePegou = mA.amigo[posicaoDoAmigo];
-                emprestimoTemporario.amigoQuePegou.temEmprestimo = true;
-                mR.VisualizarRevistas();
-                Console.Write("Qual dessas revistas o(a) " + emprestimoTemporario.amigoQuePegou.nome + " emprestou? ");
-                int posicaoDaRevista = int.Parse(Console.ReadLine()) - 1;
-                emprestimoTemporario.revistaEmprestada = mR.revista[posicaoDaRevista];
-                emprestimoTemporario.revistaEmprestada.estaDisponivel = false;
-                Console.WriteLine("E quando foi que o(a) " + emprestimoTemporario.amigoQuePegou.nome + " emprestou " + emprestimoTemporario.revistaEmprestada.tipo + "? ");
-                emprestimoTemporario.dataDoEmprestimo = DateTime.Parse(Console.ReadLine());
-            }
-            return emprestimoTemporario;
+            } while (menuAmigo.amigo[posicaoDoAmigo].temEmprestimo == false);
+            Amigo amigoTemporario = menuAmigo.amigo[posicaoDoAmigo];
+            return amigoTemporario;
         }
 
+        public Revista SelecionarRevista(Emprestimo emprestimoTemporario)
+        {
+            Revista revistaTemporaria = new();
+            Console.Write("\nQual dessas revistas foi emprestada?");
+            int posicaoDaRevista = int.Parse(Console.ReadLine()) - 1;
+            do
+            {
+                if (menuRevista.revista[posicaoDaRevista].temEmprestimo == true)
+                {
+                    Console.WriteLine("Desculpe " + menuRevista.revista[posicaoDaRevista].tipo + " está emprestada. Selecione outra: ");
+                    menuRevista.VisualizarRevistas();
+                    Console.Write("\nQual dessas revistas foi emprestada? ");
+                    posicaoDaRevista = int.Parse(Console.ReadLine()) - 1;
+                }
+                else
+                    break;
+            } while (menuRevista.revista[posicaoDaRevista].temEmprestimo == false);
 
+            if (menuRevista.revista[posicaoDaRevista].temReserva == true)
+            {
+                bool podeEmprestar = ChecarReserva(emprestimoTemporario);
+                if (podeEmprestar == true)
+                {
+                    revistaTemporaria = menuRevista.revista[posicaoDaRevista];
+                }
+                else
+                {
+                    do
+                    {
+                        Console.WriteLine("Desculpe " + menuRevista.revista[posicaoDaRevista].tipo + " está emprestada. Selecione outra: ");
+                        menuRevista.VisualizarRevistas();
+                        Console.Write("\nQual dessas revistas foi emprestada? ");
+                        posicaoDaRevista = int.Parse(Console.ReadLine()) - 1;
+                        podeEmprestar = ChecarReserva(emprestimoTemporario);
+                    } while (podeEmprestar == true);
+                }
+            }
+            revistaTemporaria = menuRevista.revista[posicaoDaRevista];
+            return revistaTemporaria;
+        }
+
+        public bool ChecarReserva(Emprestimo emprestimoTemporario)
+        {
+            bool status = false;
+            for (int i = 0; i < emprestimo.Length; i++)
+            {
+                if (menuReserva.reserva[i] == null)
+                    continue;
+                if (menuReserva.reserva[i].amigoQueReservou.nome == emprestimoTemporario.amigoQueQuerEmprestar.nome)
+                {
+                    status = true;
+                    break;
+                }
+                else
+                {
+                    status = false;
+                    break;
+                }
+            }
+            return status;
+        }
         public void VisualizarEmprestimo()
         {
             Valores valores = new Valores();
@@ -98,7 +166,7 @@ namespace ClubeDaLeitura.ConsoleApp
                     {
                         Console.WriteLine(
                             "iD................: " + (i + 1) + "\n" +
-                            "Amigo.............: " + emprestimo[i].amigoQuePegou.nome + "\n" +
+                            "Amigo.............: " + emprestimo[i].amigoQueQuerEmprestar.nome + "\n" +
                             "Revista...........: " + emprestimo[i].revistaEmprestada.tipo + "\n" +
                             "Data empréstimo...: " + emprestimo[i].dataDoEmprestimo.ToString("dd/MM/yyyy") + "\n");
                     }
@@ -120,7 +188,7 @@ namespace ClubeDaLeitura.ConsoleApp
                 {
                     Console.WriteLine(
                             "iD................: " + (i + 1) + "\n" +
-                            "Amigo.............: " + emprestimo[i].amigoQuePegou.nome + "\n" +
+                            "Amigo.............: " + emprestimo[i].amigoQueQuerEmprestar.nome + "\n" +
                             "Revista...........: " + emprestimo[i].revistaEmprestada.tipo + "\n" +
                             "Data empréstimo...: " + emprestimo[i].dataDoEmprestimo.ToString("dd/MM/yyyy") + "\n");
                 }
@@ -139,7 +207,7 @@ namespace ClubeDaLeitura.ConsoleApp
                 {
                     Console.WriteLine(
                             "iD................: " + (i + 1) + "\n" +
-                            "Amigo.............: " + emprestimo[i].amigoQuePegou.nome + "\n" +
+                            "Amigo.............: " + emprestimo[i].amigoQueQuerEmprestar.nome + "\n" +
                             "Revista...........: " + emprestimo[i].revistaEmprestada.tipo + "\n" +
                             "Data empréstimo...: " + emprestimo[i].dataDoEmprestimo.ToString("dd/MM/yyyy") + "\n");
                 }

@@ -2,3 +2,10 @@
 i+1
 Receber iD:
 i-1.
+
+Para testar:
+1. Registrar amigo
+2. ||		 categoria
+3. ||		 caixa
+4. ||		 revista
+Aí posso ver empréstimos ou reservas

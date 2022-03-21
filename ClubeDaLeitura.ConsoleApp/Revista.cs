@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClubeDaLeitura.ConsoleApp
 {
@@ -13,6 +9,7 @@ namespace ClubeDaLeitura.ConsoleApp
         public int ano;
         public Caixa caixaOndeEstaGuardada;
         public Categoria categoriaDaRevista;
-        public bool estaDisponivel;
+        public bool temEmprestimo;
+        public bool temReserva;
     }
 }

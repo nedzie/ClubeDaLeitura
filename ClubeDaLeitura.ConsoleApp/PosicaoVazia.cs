@@ -97,5 +97,23 @@ namespace ClubeDaLeitura.ConsoleApp
             }
             return posicaoVazia;
         }
+
+        public int ObterPosicaoVazia(Reserva[] reserva)
+        {
+            int posicaoVazia = 0;
+            for (int i = 0; i < reserva.Length; i++)
+            {
+                if (reserva[i] == null)
+                {
+                    posicaoVazia = i;
+                    break;
+                }
+                else
+                {
+                    posicaoVazia = -1;
+                }
+            }
+            return posicaoVazia;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace ClubeDaLeitura.ConsoleApp
 {
     public class Emprestimo
     {
-        public Amigo amigoQuePegou;
+        public Amigo amigoQueQuerEmprestar;
         public Revista revistaEmprestada;
         public DateTime dataDoEmprestimo;
         //public string dataDaDevolucao;
